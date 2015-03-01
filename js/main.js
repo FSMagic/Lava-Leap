@@ -877,7 +877,11 @@ app.main = {
 				{
 					var platform = platforms[k];
                     //will need to change ghost condition when ghost code is re-written : ckGhost
-					if(platform.type != "ghost" && player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
+                    if(platform.invisible){
+                        
+                        continue;
+                    }
+					else if(player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
 					{
 						//console.log("110");
 						var xdiff = player.x - player.prevx;
