@@ -242,7 +242,7 @@ Player.prototype.update = function update(dt, speed)
 			this.flipped = false;
 		}
 	}
-	console.log(this.state);
+	//console.log(this.state);
 };
 
 //draw

@@ -17,18 +17,16 @@ app.Platform = function()
 		this.active = true;
 		this.img = image;
 		this.type = type;
-		this.currentType = type;
-		this.prevType = type;
 		this.xVelocity = Math.random() * 100 + 100;
+        this.ghostOut = false;
+        this.ghostIn = false;
+        this.invisible = false;
+        
 		if(Math.random() < 0.5)
 		{
 			this.xVelocity *= -1;
 		}
-		this.ghost = false;
-		if(this.type == "ghost")
-		{
-			this.ghost = true;
-		}
+    
 		this.sticky = false;
 		if(this.type == "sticky")
 		{
@@ -37,6 +35,13 @@ app.Platform = function()
 		
 		//for animation
 		this.imgIndex = 0;
+        
+        if(this.type == "ghost"){
+            
+            this.imgIndex = 5;
+            //change ghost state between 2 to 5 seconds
+            setInterval(this.changeGhost, randomBetween(2000, 5000));
+        }
 		
 		if(this.type == "sticky"){
 		
@@ -54,11 +59,6 @@ app.Platform = function()
 	}
 	
 	var p = Platform.prototype;
-	
-	p.constructor = function()
-	{
-		
-	}
 	
 	p.update = function(dt, speed)
 	{
@@ -78,17 +78,7 @@ app.Platform = function()
 			}
 			this.x += this.xVelocity * dt;
 		}
-		if(this.ghost && Math.random() < 0.5 * dt)//randomly toggles roughly every 2 seconds
-		{
-			if(this.type == "ghost")
-			{
-				this.type = "normal";
-			}
-			else if(this.type == "normal")
-			{
-				this.type = "ghost";
-			}
-		}
+        
 		if(this.type == "sticky" && this.y > 600)
 		{
 			this.sticky = false;
@@ -96,18 +86,27 @@ app.Platform = function()
 		this.y += speed * dt;
 		this.active = this.active && this.y < 1080;
 		
-		if(this.type == "tramp" || this.type == "sticky"){
+		if(this.type == "tramp" || this.type == "sticky" || this.type == "ghost"){
 			
 			this.animate();
 		}
 		
-		if(this.currentType == "normal" && this.prevType == "ghost"){
-		
-			this.animate();
-		}
-		
-		this.currentType = this.type;
 	};
+    
+    //change the ghost state back and forth
+    p.changeGhost = function(){
+        if(this.ghostOut){
+            
+            this.ghostOut = false;
+            this.ghostIn = true;
+        }
+        else{
+            
+            this.ghostOut = true;
+            this.ghostIn = false;
+        }
+        console.log("ghostIn:" + this.ghostIn + " ghostOut:" + this.ghostOut);
+    }
 	
 	p.draw = function(ctx)
 	{
@@ -124,31 +123,14 @@ app.Platform = function()
 		//	}
 		//}
 		
-		for(var i = 0; i < this.width; i+=32)
+		if(this.type == "normal")
 		{
-			if(this.type != "ghost" && this.type != "tramp" && this.type != "sticky")
-			{
-				ctx.save();
-				ctx.drawImage(this.img, this.x + i, this.y);
-				ctx.restore();
-				
-				if(this.prevType == "ghost" && this.currentTyp == "normal"){
-					
-					for(var i = 0; i < this.width; i+=32){
-				
-						ctx.drawImage(
-						app.main.platformImages[3], //image
-						this.imgIndex * 32, //x of the sprite sheet
-						0, // y of the sprite sheet
-						32, // width of the crop
-						16, // height of the crop
-						this.x+i, // x coord of where to draw
-						this.y, // y coord of where to draw
-						32, // width to draw the image
-						16); // height to draw the image
-					}
-				}
-			}
+            for(var i = 0; i < this.width; i+=32)
+            {
+                ctx.save();
+                ctx.drawImage(this.img, this.x + i, this.y);
+                ctx.restore();
+            }
 		}
 		if(this.type == "tramp")
 		{	
@@ -190,30 +172,36 @@ app.Platform = function()
 					20); // height to draw the image
 			}
 			
-			if(false && this.sticky)
-			{
-				ctx.save();
-				ctx.fillStyle = "green";
-				ctx.fillRect(this.x, this.y, this.width, this.height);
-				ctx.restore();
-			}
 			
 		}
-		else if(this.ghost)
+		else if(this.type == "ghost")
 		{
 			ctx.save();
 			ctx.fillStyle = "rgba(255,255,255,0.25)";
 			ctx.fillRect(this.x, this.y, this.width, this.height/2);
 			ctx.restore();
+            for(var i = 0; i < this.width; i+=32){
+				//console.log(this.width);
+				ctx.drawImage(
+					this.img, //image
+					this.imgIndex * 32, //x of the sprite sheet
+					0, // y of the sprite sheet
+					32, // width of the crop
+					20, // height of the crop
+					this.x+i, // x coord of where to draw
+					this.y, // y coord of where to draw
+					32, // width to draw the image
+					20); // height to draw the image
+			}
 		}
 	};
 	
-	p.draw2 = function(ctx, num)//temp function to differentiate platforms
-	{
-		ctx.save();
+	p.draw2 = function(ctx, num){//temp function to differentiate platforms
+		
+        ctx.save();
 		//ctx.fillStyle = "black";
-		if(num == 1)
-		{
+		if(num == 1){
+            
 			ctx.fillStyle = "red";
 			app.drawLib.text(ctx, "" + this.x + this.width, this.x, this.y - 20, 20, "black");
 		}
@@ -223,41 +211,46 @@ app.Platform = function()
 		ctx.restore();
 	};
 	
-	p.animate = function()
-	{
+	p.animate = function(){
+        
 		// increment tics
 		this.tics += 1;
 		
 		// if tics is >= the tics allowed per frame
 		// this controls the speed of the animation
-		if(this.tics >= this.ticsPerFrame)
-		{
+		if(this.tics >= this.ticsPerFrame){
+            
 			// reset tics
 			this.tics = 0;
 			
 			// if we have reached the end of the sprite sheet
 			// if not, increment the imgIndex
-			if(this.type == "tramp" && this.imgIndex == 5)
-			{
+			if(this.type == "tramp" && this.imgIndex == 5){
+                
 				// reset the counter, imgIndex and turn animating off
 				this.imgIndex = 5;
 				this.counter = 0;
 				this.animating = false;
 			}
-			else if(this.type == "sticky" && this.imgIndex == 2)
-			{
+			else if(this.type == "sticky" && this.imgIndex == 2){
+                
 				// reset the counter, imgIndex and turn animating off
 				this.imgIndex = 2;
 				this.counter = 0;
 				this.animating = false;
 			}
-			else if(this.currentType == "normal" && this.prevType == "ghost" && this.imgIndex == 5)
-			{
-				// reset the counter, imgIndex and turn animating off
-				this.imgIndex = 5;
+			else if(this.type == "ghost"){//having some trouble getting the ghost tile to animate
+                
+                //not getting in this statement even though the state is clearly being changed
+                //?????
+                if(this.ghostIn == true){
+                    
+                    //console.log(this.imgIndex);
+                    this.imgIndex += 1;
+                }
 				this.counter = 0;
 				this.animating = false;
-			}
+            }
 			else this.imgIndex += 1;
 		}
 	}

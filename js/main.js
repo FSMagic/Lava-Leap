@@ -225,6 +225,7 @@ app.main = {
 		platformImage = new Image();
 		platformImage.src = "img/wallfurrow.png";
 		this.platformImages.push(platformImage);
+        console.log(this.platformImages);
 		
 		console.log(navigator.getGamepads());
 		this.platformArrays.push(this.platforms1);
@@ -866,6 +867,7 @@ app.main = {
 				for(var k = 0; k < platforms.length; k++)
 				{
 					var platform = platforms[k];
+                    //will need to change ghost condition when ghost code is re-written : ckGhost
 					if(platform.type != "ghost" && player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
 					{
 						//console.log("110");
@@ -1267,7 +1269,7 @@ app.main = {
 					}
 					
 					//platform images
-					//0:normal 1:sticky 2:ghost 3:moving
+					//0:normal 1:slow 2:tramp 3:moving 4:sticky 5: ghost
 					if(typeIndex == 2){
 					
 						platforms.push(new app.Platform(pwidth, px, this.platformImages[0], this.platformTypes[typeIndex]));
@@ -1278,7 +1280,7 @@ app.main = {
 					}
 					else if(typeIndex == 5){
 					
-						platforms.push(new app.Platform(pwidth, px, this.platformImages[2], this.platformTypes[typeIndex]));
+						platforms.push(new app.Platform(pwidth, px, this.platformImages[3], this.platformTypes[typeIndex]));
 					}
 					else platforms.push(new app.Platform(pwidth, px, this.platformImage, this.platformTypes[typeIndex]));
 				}
