@@ -13,11 +13,19 @@
   "dependencies": {
     "compression": "^1.4.3",
     "cookie-parser": "^1.3.4",
+<<<<<<< HEAD
     "express": "~4.9.7",
     "jade": "~1.7.0",
     "serve-favicon": "^2.2.0",
     "socket.io": "~1.1.0",
     "socket.io-client": "~1.1.0"
+=======
+    "express": "^4.12.3",
+    "serve-favicon": "^2.2.0",
+    "socket.io": "~1.1.0",
+    "socket.io-client": "~1.1.0",
+    "jade": "~1.7.0"
+>>>>>>> 51fddcbeefcaf4866452210e81459dc49855bedd
   },
   "devDependencies": {
     "jshint": "^2.6.3"
