@@ -23,7 +23,7 @@ function onRequest(request, response) {
     response.write(index); //write the index html file to the response
     //the response's end method sends the response back to the client. Otherwise the response never gets sent. 
   //Code can run after this, but nothing can be sent back to the client after this because HTTP is limited to one response per request
-    response.end(); 
+    response.end();
 }
 
 //call the http module's create server function with a request callback and tell it to listen on port 3000. 
@@ -142,7 +142,7 @@ console.log('starting up');
 //tell the server what to do when new sockets connect
 //'connection' is a built-in event from socketio that fires any time a new connection occurs
 //The 'connection' event automatically sends the newly connected socket to the function 
-io.sockets.on("connection", function(socket) {
+io.on("connection", function(socket) {
 
     console.log('started');
     

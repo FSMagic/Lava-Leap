@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+	<style type="text/css">
+		body { margin: 0; padding: 0; background: #000;}
+		canvas { display: block; background: #FFF; top:0px; left:0px;}
+		
+	</style>
+    <title>Lava Leap</title>
+	
+    <!--<script src="http://localhost:18000/socket.io/socket.io.js" type="text/javascript"></script> <!-- only works when file not hosted by node -->
+    <script src="/socket.io/socket.io.js" type="text/javascript"></script> <!-- works if file is hosted by node, even in heroku or online -->
+    <script type="text/javascript">
+        //The socket.io client library automatically makes a global for the library called io.
+        //You can change it to use a different name instead if desired.
+        
+		function connectSocket(e) {
+            
+            var socket = io.connect();
+			
+			socket.on("connect", function(){
+			
+				console.log("connecting");
+				socket.emit("join", {name: "thing"});
+			});
+		}
+	
+		function init() {
+            //when the user clicks the connect button, fire the connectSocket function
+			connectSocket();
+		}
+	
+        //when the page is loaded, call init
+		window.onload = init;
+	</script>
+    
+    <script src="assets/js/utilities.js" type="text/javascript"></script>
+	<script src="assets/js/main.js" type="text/javascript"></script>
+	<script src="assets/js/platform.js" type="text/javascript"></script>
+	<script src="assets/js/drawLib.js" type="text/javascript"></script>
+	
+	<!--added player script-->
+	<script src="assets/js/player.js" type="text/javascript"></script>
+</head>
+<body>
+    <canvas></canvas>
+</body>
+</html>
