@@ -1126,6 +1126,7 @@ app.main = {
 				if(this.startButtonTick < 0 ){
 						if(pad[0] != undefined && pad[1] != undefined || pad[0] != undefined && this.player2KeyControls == "TRUE" || this.player1KeyControls == "TRUE" && this.player2KeyControls == "TRUE"){
 								this.gamestate = "GAME";
+                                this.connectToServer();
 								this.startTime = Date.now();
 								this.startButtonTick = 30;
 								makeSound=true;
@@ -1149,6 +1150,7 @@ app.main = {
 					if(this.startButtonTick < 0 ){
 						if(pad[0] != undefined && pad[1] != undefined || pad[0] != undefined && this.player2KeyControls == "TRUE" || this.player1KeyControls == "TRUE" && this.player2KeyControls == "TRUE"){
 								this.gamestate = "GAME";
+                                this.connectToServer();
 								this.startTime = Date.now();
 								this.startButtonTick = 30;
 								makeSound=true;
@@ -1229,7 +1231,7 @@ app.main = {
 		
 			if(this.platforms1[0].y + this.PLATFORM_DIFFERENCE > this.startPlatform.y && this.startPlatform.active)
 			{
-				this.startPlatform.update(this.dt, this.speed);
+				//this.startPlatform.update(this.dt, this.speed);
 			}
 
 			for(var j = 0; j < this.platformArrays.length; j++)
@@ -1575,7 +1577,17 @@ app.main = {
 			}
 			else this.animationIndex++;
 		}
-	}
+	},
+
+    connectToServer: function(){
+        var socket = io.connect();
+
+        socket.on("connect", function(){
+
+            console.log("connecting");
+            socket.emit("join lobby", {name: "Chad"});
+        });
+    }
     
 };
 
